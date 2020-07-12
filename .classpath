@@ -19,5 +19,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-tests.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-tools.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
