@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-// import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.FileHandler;
@@ -41,32 +40,11 @@ public class Log {
       leerMatriz();
     } catch (FileNotFoundException e) {
     }
-    invariantesT.add(1);
-    invariantesT.add(3);
-    invariantesT.add(5);
-    invariantesT.add(14);
-    invariantesT.add(4);
-    invariantesT.add(2);
-    invariantesT.add(7);
-    invariantesT.add(8);
-    invariantesT.add(12);
-    invariantesT.add(13);
-    // transiciones = new HashMap<Integer, String>();
-    // transiciones.put(0, "Arrival rate");
-    // transiciones.put(1, "PowerDownThresHold 1");
-    // transiciones.put(2, "PowerDownThresHold 2");
-    // transiciones.put(3, "PowerUpDelay 1");
-    // transiciones.put(4, "PowerUpDelay 2");
-    // transiciones.put(5, "T0");
-    // transiciones.put(6, "T10");
-    // transiciones.put(7, "T11");
-    // transiciones.put(8, "T12");
-    // transiciones.put(9, "T13");
-    // transiciones.put(10, "T2");
-    // transiciones.put(11, "T4");
-    // transiciones.put(12, "T5");
-    // transiciones.put(13, "T7");
-    // transiciones.put(14, "T8");
+    invariantesT.add(1);  invariantesT.add(3);
+    invariantesT.add(5);  invariantesT.add(14);
+    invariantesT.add(4);  invariantesT.add(2);
+    invariantesT.add(7);  invariantesT.add(8);
+    invariantesT.add(12); invariantesT.add(13);
   }
 
   private void leerMatriz() throws FileNotFoundException {
@@ -83,7 +61,6 @@ public class Log {
   public void actualizarLog(int indice, RealMatrix mAReal) {
     mOReal = mAReal;
     checkPInvariants(mAReal);
-    // logger.info(transiciones.get(indice));
     logger.info("" + indice);
     if (this.invariantesT.contains(indice)) {
       this.histInvT += " " + Integer.toString(indice);
@@ -123,33 +100,37 @@ public class Log {
       logger.info("Todo bien, matrices iguales.");
     }
     histInvT += " ";
-    this.checkInvT(histInvT);
+    if (this.checkInvT(histInvT)) {
+      logger.info("Todo en orden invT");
+    } else {
+      logger.info("No se cumplen InvT");
+    }
 
   }
 
 
-private void checkInvT(String input) {
+private boolean checkInvT(String input) {
       String resultado = histInvT;
       //Invariante 12-13
       Pattern invT1 = Pattern.compile("\\b12\\b((\\s|.)*?)\\b13\\b");
       Matcher regexMatcher = invT1.matcher(resultado);
       resultado = regexMatcher.replaceAll("$1");
-      System.out.println("\n\n\n\n" + resultado);
   
       // //Invariante 7-8
       invT1 = Pattern.compile("\\b14\\b((\\s|.)*?)\\b4\\b((\\s|.)*?)\\b2\\b");
       regexMatcher = invT1.matcher(resultado);
       resultado = regexMatcher.replaceAll("$1$3");
-      System.out.println("\n\n\n\n" + resultado);
   
       invT1 = Pattern.compile("\\b7\\b((\\s|.)*?)\\b8\\b");
       regexMatcher = invT1.matcher(resultado);
       resultado = regexMatcher.replaceAll("$1");
-      System.out.println("\n\n\n\n" + resultado);
   
       invT1 = Pattern.compile("\\b5\\b((\\s|.)*?)\\b3\\b((\\s|.)*?)\\b1\\b");
       regexMatcher = invT1.matcher(resultado);
       resultado = regexMatcher.replaceAll("$1$3");
-      System.out.println("\n\n RESULTADO FINAL \n\n" + resultado);
+
+      invT1 = Pattern.compile("[^\\s]+");
+      regexMatcher = invT1.matcher(resultado);
+      return !regexMatcher.find();
 }
 }
