@@ -6,24 +6,7 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="bin/test" path="src/test/java">
-		<attributes>
-			<attribute name="test" value="true"/>
-			<attribute name="gradle_scope" value="test"/>
-			<attribute name="gradle_used_by_scope" value="test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-13">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-tests.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/sebam/Desktop/Cosas de la facu/Programacion concurrente/Libreria nueva/commons-math3-3.6.1/commons-math3-3.6.1-tools.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
