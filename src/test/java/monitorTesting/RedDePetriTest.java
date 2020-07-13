@@ -5,14 +5,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-
 import org.junit.jupiter.api.Test;
 
 import monitor.*;
 
+@SuppressWarnings("rawtypes")
 class RedDePetriTest {
-  @SuppressWarnings("rawtypes")
+
+  /**
+   * Unit test Genera alfas y betas al azar, y se va fijando para cada transicion,
+   * que se pueda o no hacer el disparo segun corresponda.
+   */
   @Test
   void disparoTest() {
     RedDePetri rdp = new RedDePetri();
@@ -33,14 +38,10 @@ class RedDePetriTest {
       Object objetoAlfaReal = alfaReal.get(rdp);
       Method setAlfaReal = objetoAlfaReal.getClass().getDeclaredMethod("setEntry",
           new Class[] { int.class, int.class, double.class });
-      Method getAlfaReal = objetoAlfaReal.getClass().getDeclaredMethod("getEntry",
-          new Class[] { int.class, int.class });
 
       Object objetoBetaReal = betaReal.get(rdp);
       Method setBetaReal = objetoBetaReal.getClass().getDeclaredMethod("setEntry",
           new Class[] { int.class, int.class, double.class });
-      Method getBetaReal = objetoBetaReal.getClass().getDeclaredMethod("getEntry",
-          new Class[] { int.class, int.class });
 
       Object objetoTimeStamp = timeStamp.get(rdp);
       Method setTimeStamp = objetoTimeStamp.getClass().getDeclaredMethod("set",
@@ -72,6 +73,229 @@ class RedDePetriTest {
     } catch (InvocationTargetException e) {
       e.printStackTrace();
     }
+  }
 
+  /**
+   * En este test, se van a agregar manualmente a un ArrayList las transiciones
+   * que deberian estar sensibilizadas para un momento dado y luego comprobar que
+   * la funcion de sensibilizado se comporta correctamente. Luego se va a cambiar
+   * el estado de la red de petri, y se va a intentar de nuevo.
+   */
+  @Test
+  void sensibilizadoTest() {
+    RedDePetri rdp = new RedDePetri();
+    Class<?> refleccion = rdp.getClass();
+    ArrayList<Integer> transicionesSensibilizadas = new ArrayList<Integer>();
+
+    try {
+      Method sensibilizado = refleccion.getDeclaredMethod("sensibilizadoTransicion", new Class[] { int.class });
+      Method cantidadTransiciones = refleccion.getDeclaredMethod("getCantTransiciones");
+      Method disparar = refleccion.getDeclaredMethod("disparar", new Class[] { int.class });
+      sensibilizado.setAccessible(true);
+      cantidadTransiciones.setAccessible(true);
+      disparar.setAccessible(true);
+      int transiciones = (int) cantidadTransiciones.invoke(rdp);
+
+      // quiero ignorar la ventana de tiempo, que es testeada en la funcion de disparo
+      Field alfa = refleccion.getDeclaredField("alfaReal");
+      alfa.setAccessible(true);
+      Object objetoAlfaReal = alfa.get(rdp);
+      Method setAlfaReal = objetoAlfaReal.getClass().getDeclaredMethod("setEntry",
+          new Class[] { int.class, int.class, double.class });
+      for (int i = 0; i < transiciones; i++) {
+        setAlfaReal.invoke(objetoAlfaReal, 0, i, (double) -1);
+      }
+
+      // inicialmente, solo deberia estar sensibilizada la transicion 0(arrival rate)
+      // checkeo eso, y luego disparo la transicion 0
+      transicionesSensibilizadas.add(0);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+
+      //me voy para el buffer del procesador 2(T10)
+      transicionesSensibilizadas.add(6);
+      transicionesSensibilizadas.add(11);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 6));
+      
+      //enciendo el procesador 2 (T8)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean)disparar.invoke(rdp, 14));
+      
+      //powerUpDelay2
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(4);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean)disparar.invoke(rdp, 4));
+      
+      //ejecuto el inicio del proceso de un paquete en el buffer2(T11)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(7);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean)disparar.invoke(rdp, 7));
+      
+      //delay2 de proceso de paquete (T7)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(8);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean)disparar.invoke(rdp, 8));
+      
+      //apagado del procesador 2
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(2);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean)disparar.invoke(rdp, 2));
+      
+      //segunda secuencia
+      
+      //ejecuto arrival rate
+      transicionesSensibilizadas.add(0);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      
+      //voy por el buffer del procesador 1
+      transicionesSensibilizadas.add(6);
+      transicionesSensibilizadas.add(11);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 11));
+      
+      //ejecuto arrival rate
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(5);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      
+      //voy por el buffer del procesador 1
+      transicionesSensibilizadas.add(6);
+      transicionesSensibilizadas.add(11);
+      transicionesSensibilizadas.add(5);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 11));
+      
+      //ejecuto arrival rate
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(5);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      
+      //me voy por el buffer del procesador 2
+      transicionesSensibilizadas.add(6);
+      transicionesSensibilizadas.add(11);
+      transicionesSensibilizadas.add(5);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 6));
+      
+      //ejecuto arrival rate
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(5);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      
+      //me voy por el buffer del procesador 2
+      transicionesSensibilizadas.add(6);
+      transicionesSensibilizadas.add(11);
+      transicionesSensibilizadas.add(5);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 6));
+      
+      //ejecuto T0 que es la secuencia de prendido del procesador 1
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(5);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 5));
+      
+      //ejecuto el powerUpDelay1
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(3);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 3));
+      
+      //ejecuto JVM1 (T2)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(10);
+      transicionesSensibilizadas.add(12);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 10));
+      
+      //ejecuto el inicio del proceso de un paquete en el buffer1(T5)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(12);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 12));
+      
+      //delay1 de proceso de paquete (T7)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(13);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 13));
+      
+      //ejecuto el inicio del proceso de un paquete en el buffer1(T5)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(12);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 12));
+      
+      //delay1 de proceso de paquete (T7)
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(13);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 13));
+      
+      //apagado del procesador 1
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(1);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+      assertTrue((boolean) disparar.invoke(rdp, 1));
+      
+      //se fija si el estado es el esperado
+      transicionesSensibilizadas.add(0);
+      transicionesSensibilizadas.add(14);
+      checkearSensibilizado(transicionesSensibilizadas, transiciones, sensibilizado, rdp);
+
+    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (NoSuchFieldException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void checkearSensibilizado(ArrayList<Integer> sensibilizadas, int transiciones, Method sensibilizado,
+      RedDePetri rdp) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+    for (int i = 0; i < transiciones; i++) {
+      if (!sensibilizadas.contains(i)) {
+        assertTrue(!(boolean) sensibilizado.invoke(rdp, i));
+      } else {
+        assertTrue((boolean) sensibilizado.invoke(rdp, i));
+      }
+    }
+    sensibilizadas.clear();
+  }
+
+  // Este va a ser un integration test, ya que hay que testear primero la funcion
+  // de sensibilizado
+  @Test
+  void setTimeStampTest() {
+    RedDePetri rdp = new RedDePetri();
+    Class<?> refleccion = rdp.getClass();
+
+    try {
+      Method setTimeStamp = refleccion.getDeclaredMethod("setTimeStamp");
+      setTimeStamp.setAccessible(true);
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
   }
 }

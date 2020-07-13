@@ -205,23 +205,11 @@ public class RedDePetri {
     setTimeStamp();
     return true;
   }
-
+  
   private boolean sensibilizado(int indice, RealMatrix matriz) {
-    if (esInhibidora(indice)) {
-      HashSet<Integer> plazasInhibidas = new HashSet<Integer>();
-      for (int i = 0; i < filas; i++) {
-        if (inhibicionReal.getEntry(i, indice) != 0) {
-          plazasInhibidas.add(i);
-        }
+      if(!sensibilizadoPorInhibicion(indice, matriz)) {
+        return false;
       }
-      Iterator<Integer> it = plazasInhibidas.iterator();
-      while (it.hasNext()) {
-        if (matriz.getEntry(it.next(), 0) != 0) {
-          return false;
-        }
-      }
-      return true;
-    } else {
       double[][] disparo = new double[columnas][1];
       for (int i = 0; i < columnas; i++) {
         if (i != indice) {
@@ -262,7 +250,6 @@ public class RedDePetri {
         }
         return true;
       }
-    }
   }
 
   private boolean esInhibidora(int indice) {
@@ -274,6 +261,23 @@ public class RedDePetri {
       }
     }
     return inhibidora;
+  }
+  private boolean sensibilizadoPorInhibicion(int indice, RealMatrix matriz) {
+    if (esInhibidora(indice)) {
+      HashSet<Integer> plazasInhibidas = new HashSet<Integer>();
+      for (int i = 0; i < filas; i++) {
+        if (inhibicionReal.getEntry(i, indice) != 0) {
+          plazasInhibidas.add(i);
+        }
+      }
+      Iterator<Integer> it = plazasInhibidas.iterator();
+      while (it.hasNext()) {
+        if (matriz.getEntry(it.next(), 0) != 0) {
+          return false;
+        }
+      }
+    }
+    return true; //esto esta mal
   }
 
   private void setTimeStamp() {
