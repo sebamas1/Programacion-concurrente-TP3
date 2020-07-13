@@ -15,14 +15,14 @@ public class Politica {
 	private double buffer1 = 0;
 	private double buffer2 = 0;
 	private int transiciones = 0;
-	private final ArrayList<Boolean> señalizadas;
+	private final ArrayList<Boolean> senializadas;
 
 	public Politica(int transiciones) {
 		vectorPrioridad = new Array2DRowRealMatrix();
 		this.transiciones = transiciones;
-		señalizadas = new ArrayList<Boolean>();
+		senializadas = new ArrayList<Boolean>();
 		for (int i = 0; i < transiciones; i++) {
-			señalizadas.add(false);
+			senializadas.add(false);
 		}
 		try {
 			leerMatriz();
@@ -30,11 +30,11 @@ public class Politica {
 		}
 
 	}
-	protected void setSeñalizacionFalse(int indice) {
-		señalizadas.set(indice, false);
+	protected void setSenializacionFalse(int indice) {
+		senializadas.set(indice, false);
 	}
 	protected Integer despertar(ArrayList<Integer> sensiYencol, RealMatrix mAReal, int transicion) {
-		setSeñalizacionFalse(transicion);
+		setSenializacionFalse(transicion);
 		buffer1 = mAReal.getEntry(0, 0);
 		buffer2 = mAReal.getEntry(2, 0);
 		if (buffer1 > buffer2) {
@@ -67,13 +67,13 @@ public class Politica {
 		}
 		Random rand = new Random();
 		int index = sensiYencol.get(rand.nextInt(sensiYencol.size()));
-		señalizadas.set(index, true); 
+		senializadas.set(index, true); 
 		return index; 
 	}
 
-	protected boolean señalizacion(int indice) { 
-		for (int i = 0; i < señalizadas.size(); i++) {
-			if (señalizadas.get(i)) {
+	protected boolean senializacion(int indice) { 
+		for (int i = 0; i < senializadas.size(); i++) {
+			if (senializadas.get(i)) {
 				if (indice == i) {
 					return true;
 				} else
@@ -94,8 +94,8 @@ public class Politica {
 		input.close();
 	}
 	protected void reseteo() { 
-		for(int i = 0; i < señalizadas.size(); i++) {
-			señalizadas.set(i, false);
+		for(int i = 0; i < senializadas.size(); i++) {
+			senializadas.set(i, false);
 		}
 	}
 }
