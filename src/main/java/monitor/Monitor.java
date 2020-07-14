@@ -30,7 +30,7 @@ public class Monitor {
 	public void dispararTransicion(int indice) {
 		lock.lock();
 
-		while (!RdP.sensibilizadoTransicion(indice) || !politica.senializacion(indice)) {
+		while (!RdP.sensibilizadoTransicion(indice) || !politica.senalizacion(indice)) {
 			encolados.set(indice, true);
 			try {
 				condiciones.get(indice).await();
@@ -42,7 +42,7 @@ public class Monitor {
 		}
 		encolados.set(indice, false); 
 		while (!RdP.disparar(indice)) {
-			politica.setSenializacionFalse(indice); 
+			politica.setSenalizacionFalse(indice); 
 			long sleep = RdP.sleepTime(indice); 
 			lock.unlock();
 			try {
