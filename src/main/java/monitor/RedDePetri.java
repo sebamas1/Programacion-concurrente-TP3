@@ -176,14 +176,15 @@ public class RedDePetri {
   }
 
   /**
-   * Se fija si la transicion esta dentro de la ventana de tiempo, en cuyo caso dispara la transicion, y en caso
-   * de que no este en la ventana de tiempo, retorna false y termina la ejecucion.
-   * Ademas, si el disparo es exitoso, actualiza el tiempo de sensibilizado de cada transicion.
+   * Se fija si la transicion esta dentro de la ventana de tiempo, en cuyo caso
+   * dispara la transicion, y en caso de que no este en la ventana de tiempo,
+   * retorna false y termina la ejecucion. Ademas, si el disparo es exitoso,
+   * actualiza el tiempo de sensibilizado de cada transicion.
    * 
    * @param indice Representa el indice de la transicion que se desea disparar
    * 
    * @return true en caso de que la transicion este dentro de la ventana de tiempo
-   * y retorna false si la transicion esta fuera de la ventana de tiempo.
+   *         y retorna false si la transicion esta fuera de la ventana de tiempo.
    */
   protected boolean disparar(int indice) {
     if (((alfaReal.getEntry(0, indice) > 0)
@@ -205,53 +206,74 @@ public class RedDePetri {
     setTimeStamp();
     return true;
   }
-  
+
+  /**
+   * Evalua si una transicion esta sensibilizada segun la matriz de estado que se
+   * le pase: evalua las transiciones inhibidas, los autoloop, y las normales.
+   * 
+   * @param indice es el numero de la transicion que se desea saber si esta
+   *               sensibilizada.
+   * @param matriz es la matriz con respecto a la cual se desea saber si la
+   *               transicion esta sensibilizada o no.
+   * @return retorna true si la transicion especificada esta sensibilizada, o
+   *         false en caso contrario.
+   */
   private boolean sensibilizado(int indice, RealMatrix matriz) {
-      if(!sensibilizadoPorInhibicion(indice, matriz)) {
-        return false;
+    if (!sensibilizadoPorInhibicion(indice, matriz)) {
+      return false;
+    }
+    double[][] disparo = new double[columnas][1];
+    for (int i = 0; i < columnas; i++) {
+      if (i != indice) {
+        disparo[i][0] = 0;
+      } else
+        disparo[i][0] = 1;
+    }
+    boolean autoloop = false;
+    HashSet<Integer> plazasAutoloop = new HashSet<Integer>();
+    RealMatrix disparoReal = new Array2DRowRealMatrix(disparo);
+    for (int i = 0; i < filas; i++) {
+      if ((incidenciaRealPositiva.getEntry(i, indice) != 0 && incidenciaRealNegativa.getEntry(i, indice) != 0)) {
+        autoloop = true;
+        plazasAutoloop.add(i);
       }
-      double[][] disparo = new double[columnas][1];
-      for (int i = 0; i < columnas; i++) {
-        if (i != indice) {
-          disparo[i][0] = 0;
-        } else
-          disparo[i][0] = 1;
-      }
-      boolean autoloop = false;
-      HashSet<Integer> plazasAutoloop = new HashSet<Integer>();
-      RealMatrix disparoReal = new Array2DRowRealMatrix(disparo);
+    }
+    RealMatrix aux = new Array2DRowRealMatrix();
+    aux = matriz.add(incidenciaReal.multiply(disparoReal));
+    if (!autoloop) {
       for (int i = 0; i < filas; i++) {
-        if ((incidenciaRealPositiva.getEntry(i, indice) != 0 && incidenciaRealNegativa.getEntry(i, indice) != 0)) {
-          autoloop = true;
-          plazasAutoloop.add(i);
+        if (aux.getEntry(i, 0) < 0) {
+          return false;
         }
       }
-      RealMatrix aux = new Array2DRowRealMatrix();
-      aux = matriz.add(incidenciaReal.multiply(disparoReal));
-      if (!autoloop) {
-        for (int i = 0; i < filas; i++) {
-          if (aux.getEntry(i, 0) < 0) {
-            return false;
-          }
+      return true;
+    } else {
+      for (int i = 0; i < filas; i++) {
+        if ((aux.getEntry(i, 0) < 0)) {
+          return false;
         }
-        return true;
-      } else {
-        for (int i = 0; i < filas; i++) {
-          if ((aux.getEntry(i, 0) < 0)) {
-            return false;
-          }
-        }
-        Iterator<Integer> itA = plazasAutoloop.iterator();
-        while (itA.hasNext()) {
-          int plaza = itA.next();
-          if (matriz.getEntry(plaza, 0) < incidenciaRealNegativa.getEntry(plaza, indice)) {
-            return false;
-          }
-        }
-        return true;
       }
+      Iterator<Integer> itA = plazasAutoloop.iterator();
+      while (itA.hasNext()) {
+        int plaza = itA.next();
+        if (matriz.getEntry(plaza, 0) < incidenciaRealNegativa.getEntry(plaza, indice)) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 
+  /**
+   * Evalua si la transicion especificada es inhibida por alguna plaza o no. Es
+   * usada internamente solamente por sensibilizadoPorInhibicion para saber si
+   * existen relaciones inhibidoras para la transicion especificada.
+   * 
+   * @param indice representa la transicion que se desea saber si esta inhibida
+   *               por alguna plaza.
+   * @return true en case de que la transicion este inhibida por alguna plaza, y
+   *         false en caso contrario.
+   */
   private boolean esInhibidora(int indice) {
     boolean inhibidora = false;
     for (int i = 0; i < filas; i++) {
@@ -262,6 +284,20 @@ public class RedDePetri {
     }
     return inhibidora;
   }
+
+  /**
+   * Se fija que la transicion especificada, este sensibilizada solamente tomando
+   * en cuenta la matriz de inhibicion. Se usa internamente por la funcion
+   * sensibilizado, para determinar si la transicion esta sensibilizada solamente
+   * segun sus relaciones de inhibicion.
+   * 
+   * @param indice es la transicion que se desea evaluar, si esta sensibilizada o
+   *               no segun su inhibicion.
+   * @param matriz es la matriz de estado, con la cual se quiere evaluar si la
+   *               transicion esta sensibilizada o no.
+   * @return true en caso de que la transicion este sensibilizada, o false en caso
+   *         contrario.
+   */
   private boolean sensibilizadoPorInhibicion(int indice, RealMatrix matriz) {
     if (esInhibidora(indice)) {
       HashSet<Integer> plazasInhibidas = new HashSet<Integer>();
@@ -277,9 +313,15 @@ public class RedDePetri {
         }
       }
     }
-    return true; //esto esta mal
+    return true; // esto esta mal
   }
 
+  /**
+   * Este metodo se llama cada vez que se realiza un disparo. Compara la matriz de
+   * estado actual contra la anterior, y en caso de que haya nuevas
+   * sensibilizaciones entre las transiciones, guarda el momento en el que esa
+   * transicion se sensibilizo.
+   */
   private void setTimeStamp() {
     for (int i = 0; i < columnas; i++) {
       if (sensibilizado(i, mAReal) && !sensibilizado(i, mVReal)) {
@@ -288,6 +330,13 @@ public class RedDePetri {
     }
   }
 
+  /**
+   * Evalua que transiciones estan sensibilizadas cuando se llama esta funcion, y
+   * devuelve un HashSet que contiene el indice de todas estas transiciones.
+   * 
+   * @return HashSet de Integers conteniendo el indice de cada transicion
+   *         sensibilizada al momento de llamar a este metodo.
+   */
   protected HashSet<Integer> habilitacion() {
     HashSet<Integer> habilitacion = new HashSet<Integer>();
     for (int indice = 0; indice < columnas; indice++) {
@@ -311,6 +360,15 @@ public class RedDePetri {
     return (long) 0;
   }
 
+  /**
+   * Evalua el sensibilizado de la transicion especificado, pero solamente con
+   * respecto a la matriz de estado actual.
+   * 
+   * @param indice representa la transicion que se desea saber si esta
+   *               sensibilizada o no.
+   * @return true en caso de que la transicion este sensibilizada, o false en caso
+   *         contrario.
+   */
   protected boolean sensibilizadoTransicion(int indice) {
     return sensibilizado(indice, mAReal);
   }
