@@ -5,7 +5,7 @@ import logger.Log;
 import monitor.Monitor;
 
 public class Sistema {
-	protected static final int TAREASTOTALES = 400;
+	protected static final int TAREASTOTALES = 600;
 	protected static int tareasHechasCore1 = 0;
 	protected static int tareasHechasCore2 = 0;
 

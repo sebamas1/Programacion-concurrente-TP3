@@ -4,5 +4,5 @@
 # Ignore Gradle build output directory
 build
 
-# ignore all . files and . folders
+# ignore all Registro files and Registro folders
 Registro*
