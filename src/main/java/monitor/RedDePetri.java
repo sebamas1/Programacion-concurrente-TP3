@@ -32,6 +32,7 @@ public class RedDePetri {
       leerAlfa();
       leerBeta();
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
       System.out.println("No se encontro el archivo para leer la matriz.");
     }
     mAReal = new Array2DRowRealMatrix();
@@ -347,6 +348,15 @@ public class RedDePetri {
     return habilitacion;
   }
 
+  /**
+   * Evalua el tiempo necesario para que se le permita a un thread disparar la
+   * transicion que se referencia como argumento.
+   * 
+   * @param indice representa el indice de la transicion temporizada sobre la que
+   *               va a trabajar esta funcion.
+   * @return retorna el tiempo que debe esperar el thread para poder ejecutar la
+   *         transicion temporizada.
+   */
   protected Long sleepTime(int indice) {
     long currentTime = System.currentTimeMillis();
     if ((currentTime - timeStamp.get(indice)) < alfaReal.getEntry(0, indice)) {

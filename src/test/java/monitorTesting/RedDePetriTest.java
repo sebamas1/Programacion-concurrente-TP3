@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.jupiter.api.Test;
 
 import monitor.*;
@@ -16,8 +18,8 @@ import monitor.*;
 class RedDePetriTest {
 
   /**
-   * Unit test Genera alfas y betas al azar, y se va fijando para cada transicion,
-   * que se pueda o no hacer el disparo segun corresponda.
+   * Unit test para disparar(). Genera alfas y betas al azar, y se va fijando para
+   * cada transicion, que se pueda o no hacer el disparo segun corresponda.
    */
   @Test
   void disparoTest() {
@@ -405,9 +407,10 @@ class RedDePetriTest {
   }
 
   /**
-   * Este test es para setTimeStamp, y se fija que dicho metodo actualice las
-   * marcas de tiempos cuando debe actualizarlas.
+   * Unit test para setTimeStamp Este test es para setTimeStamp, y se fija que
+   * dicho metodo actualice las marcas de tiempos cuando debe actualizarlas.
    */
+  @SuppressWarnings("unchecked")
   @Test
   void setTimeStampTest() {
     RedDePetri rdp = new RedDePetri();
@@ -473,6 +476,62 @@ class RedDePetriTest {
     } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void sleepTimeTest() {
+    long tolerancia = 5;
+    RedDePetri rdp = new RedDePetri();
+    Class<?> refleccion = rdp.getClass();
+    try {
+      Method sleepTime = refleccion.getDeclaredMethod("sleepTime", new Class[] { int.class });
+      Method disparar = refleccion.getDeclaredMethod("disparar", new Class[] { int.class });
+      Field alfas = refleccion.getDeclaredField("alfaReal");
+      Field timeStamp = refleccion.getDeclaredField("timeStamp");
+      sleepTime.setAccessible(true);
+      disparar.setAccessible(true);
+      alfas.setAccessible(true);
+      timeStamp.setAccessible(true);
+      ArrayList<Long> marcasTiempo = (ArrayList<Long>) timeStamp.get(rdp);
+      RealMatrix alfaReal = (RealMatrix) alfas.get(rdp);
+      alfaReal.setEntry(0, 0, -1);
+
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      assertTrue((boolean) disparar.invoke(rdp, 11));
+      assertTrue((boolean) disparar.invoke(rdp, 5));
+      assertTrue((boolean) disparar.invoke(rdp, 3));
+      assertTrue((boolean) disparar.invoke(rdp, 12));
+      assertTrue((System.currentTimeMillis() - marcasTiempo.get(13) + (long) sleepTime.invoke(rdp, 13)
+          - alfaReal.getEntry(0, 13) < tolerancia));
+      assertTrue(!(boolean) disparar.invoke(rdp, 13));
+      Thread.sleep((long) sleepTime.invoke(rdp, 13));
+      assertTrue((boolean) disparar.invoke(rdp, 13));
+
+      assertTrue((boolean) disparar.invoke(rdp, 0));
+      assertTrue((boolean) disparar.invoke(rdp, 6));
+      assertTrue((boolean) disparar.invoke(rdp, 14));
+      assertTrue((boolean) disparar.invoke(rdp, 4));
+
+      for (int i = 0; i < 499; i++) {
+        assertTrue((boolean) disparar.invoke(rdp, 0));
+        assertTrue((boolean) disparar.invoke(rdp, 6));
+      }
+      
+      for(int i = 0; i < 500 ; i++) {
+        assertTrue((boolean) disparar.invoke(rdp, 7));
+        assertTrue(!(boolean) disparar.invoke(rdp, 8));
+        assertTrue((System.currentTimeMillis() - marcasTiempo.get(8) + (long) sleepTime.invoke(rdp, 8)
+        - alfaReal.getEntry(0, 8) < tolerancia));
+        Thread.sleep((long) sleepTime.invoke(rdp, 8));
+        assertTrue((boolean) disparar.invoke(rdp, 8));
+      }
+
+    } catch (NoSuchMethodException | SecurityException | InterruptedException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
       e.printStackTrace();
     }
   }
