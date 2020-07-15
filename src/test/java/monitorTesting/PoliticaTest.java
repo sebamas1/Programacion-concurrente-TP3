@@ -13,9 +13,9 @@ import monitor.Politica;
 class PoliticaTest {
   /**
    * UniTest para senializacion(indice). Se fija que senializacion devuelva true
-   * si no existen transiciones señalizadas, y en caso de que exista alguna
-   * transicion señalizada, que solo devuelva true en caso de que el indice
-   * coincida con la transicion señalizada; en otro caso devuelve false.
+   * si no existen transiciones senializadas, y en caso de que exista alguna
+   * transicion senializada, que solo devuelva true en caso de que el indice
+   * coincida con la transicion senializada; en otro caso devuelve false.
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -70,11 +70,14 @@ class PoliticaTest {
     try {
       Method prioridad = refleccion.getDeclaredMethod("prioridad", new Class[] { ArrayList.class });
       Field vectorPrioridad = refleccion.getDeclaredField("vectorPrioridad");
+      Field senializadas = refleccion.getDeclaredField("senializadas");
       prioridad.setAccessible(true);
       vectorPrioridad.setAccessible(true);
+      senializadas.setAccessible(true);
 
       RealMatrix objetoVectorPrioridad = (RealMatrix) vectorPrioridad.get(politica);
       ArrayList<Integer> transiciones = new ArrayList<Integer>();
+      ArrayList<Boolean> arraySenializadas = (ArrayList<Boolean>) senializadas.get(politica);
       for (int i = 0; i < 15; i++) { // hardcode
         transiciones.add(i);
       }
@@ -88,6 +91,7 @@ class PoliticaTest {
         ArrayList<Integer> transiciones2 = (ArrayList<Integer>) transiciones.clone();
         assertTrue(
             objetoVectorPrioridad.getEntry((int) prioridad.invoke(politica, transiciones2), 0) == prioridad_mas_alta);
+        assertTrue(arraySenializadas.get((int) prioridad.invoke(politica, transiciones2)));
       }
     } catch (NoSuchMethodException | SecurityException | NoSuchFieldException e) {
       e.printStackTrace();

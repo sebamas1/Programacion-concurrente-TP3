@@ -42,6 +42,21 @@ public class Politica {
     input.close();
   }
 
+  /**
+   * Este metodo setea la senializacion de la transicion(o thread) que ejecuta
+   * este metodo en false, para avisarle a la politica que va a abandonar el
+   * monitor, y que puede dejar pasar a otro thread. Ademas, observa el marcado
+   * actual, y remueve de la lista(si existe) a la transicion que alimenta al
+   * buffer que tenga mas productos.
+   * 
+   * 
+   * @param sensiYencol transiciones sensibilizadas, que estan esperando dentro
+   *                    del monitor.
+   * @param mAReal      es el marcado actual de la RedDePetri.
+   * @param transicion  la transicion que ejecuta este metodo.
+   * @return un Integer representando el numero de transicion que se desea
+   *         despertar, o null si no hay transiciones para despertar.
+   */
   protected Integer despertar(ArrayList<Integer> sensiYencol, RealMatrix mAReal, int transicion) {
     setSenializacionFalse(transicion);
     buffer1 = mAReal.getEntry(0, 0);
@@ -55,7 +70,6 @@ public class Politica {
       return prioridad(sensiYencol);
     } else
       return (Integer) null;
-
   }
 
   /**
@@ -95,15 +109,15 @@ public class Politica {
   }
 
   /**
-   * Este metodo se fija si existen transiciones señalizadas, y en caso positivo,
-   * devuelve true si el indice es la transicion señalizada, o false en caso
-   * contrario. Si no existen transiciones señalizadas, devuelve true.
+   * Este metodo se fija si existen transiciones senializadas, y en caso positivo,
+   * devuelve true si el indice es la transicion senializada, o false en caso
+   * contrario. Si no existen transiciones senializadas, devuelve true.
    * 
    * @param indice representa el indice de la transicion sobre la que trabaja la
    *               funcion.
-   * @return true en caso de que la transicion este señalizada, o no existan
-   *         transiciones señalizadas, o false si la transicion del indice, no
-   *         coincide con la transicion señalizada.
+   * @return true en caso de que la transicion este senializada, o no existan
+   *         transiciones senializadas, o false si la transicion del indice, no
+   *         coincide con la transicion senializada.
    */
   protected boolean senializacion(int indice) {
     for (int i = 0; i < senializadas.size(); i++) {
@@ -118,7 +132,7 @@ public class Politica {
   }
 
   /**
-   * Seter, que pone el vector de señalizacion en false, para que se deje pasar a
+   * Seter, que pone el vector de senializacion en false, para que se deje pasar a
    * la siguiente transicion que intente entrar en el monitor. Fue creada
    * exclusivamente por la existencia de las transiciones temporizadas.
    */
@@ -129,7 +143,7 @@ public class Politica {
   }
 
   /**
-   * Setea la señalizacion de esta transicion en false, lo que permite que otras
+   * Setea la senializacion de esta transicion en false, lo que permite que otras
    * transiciones puedan tomar el monitor. Es protegida, porque aunque se usa casi
    * exclusivamente de forma interna, las transiciones temporizadas deben poder
    * "soltar" el monitor.
