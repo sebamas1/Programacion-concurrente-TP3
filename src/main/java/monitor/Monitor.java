@@ -27,6 +27,7 @@ public class Monitor {
     }
     this.log = log;
   }
+
   public void dispararTransicion(int indice) {
     lock.lock();
 
@@ -35,12 +36,13 @@ public class Monitor {
       try {
         condiciones.get(indice).await();
       } catch (InterruptedException e) {
-        System.out.println(
-            Thread.currentThread().getName() + " interrumpido en la condicion de transicion " + indice);
+        System.out.println(Thread.currentThread().getName() + " interrumpido en la condicion de transicion " + indice);
         return;
       }
     }
     encolados.set(indice, false);
+    // pensa si es posible que mientras un thread esta intentando dispararse, venga
+    // otro a cambiarle el sensibilizado
     while (!RdP.disparar(indice)) {
       politica.setSenializacionFalse(indice);
       long sleep = RdP.sleepTime(indice);
