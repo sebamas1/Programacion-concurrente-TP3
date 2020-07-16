@@ -3,17 +3,17 @@ package main;
 import monitor.Monitor;
 
 public class Proceso1 implements Runnable {
-	private Monitor monitor;
+  private Monitor monitor;
 
-	public Proceso1(Monitor monitor) {
-		this.monitor = monitor;
-	}
+  public Proceso1(Monitor monitor) {
+    this.monitor = monitor;
+  }
 
-	public void run() {
-		while (true) {
-			monitor.dispararTransicion(12); // T5
-			monitor.dispararTransicion(13); // T7
-			Sistema.tareasHechasCore1++;
-		}
-	}
+  public void run() {
+    while (true) {
+      monitor.dispararTransicion(12); // T5
+      monitor.dispararTransicion(13); // T7
+      Sistema.tareasHechasCore1++;
+    }
+  }
 }

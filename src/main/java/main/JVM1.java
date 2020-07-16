@@ -3,15 +3,15 @@ package main;
 import monitor.Monitor;
 
 public class JVM1 implements Runnable {
-	private Monitor monitor;
+  private Monitor monitor;
 
-	public JVM1(Monitor monitor) {
-		this.monitor = monitor;
-	}
+  public JVM1(Monitor monitor) {
+    this.monitor = monitor;
+  }
 
-	public void run() {
-		while (Sistema.TAREASTOTALES > Sistema.tareasHechasCore1 + Sistema.tareasHechasCore2) {
-			monitor.dispararTransicion(10);
-		}
-	}
+  public void run() {
+    while (Sistema.TAREASTOTALES > Sistema.tareasHechasCore1 + Sistema.tareasHechasCore2) {
+      monitor.dispararTransicion(10);
+    }
+  }
 }
