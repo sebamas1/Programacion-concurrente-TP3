@@ -5,7 +5,7 @@ import monitor.Monitor;
 public class Proceso2 implements Runnable {
   private Monitor monitor;
 
-  public Proceso2(Monitor monitor) {
+  protected Proceso2(Monitor monitor) {
     this.monitor = monitor;
   }
 

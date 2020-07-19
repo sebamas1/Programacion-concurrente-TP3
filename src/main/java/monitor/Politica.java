@@ -17,6 +17,11 @@ public class Politica {
   private int transiciones = 0;
   private final ArrayList<Boolean> senializadas;
 
+  /**
+   * Crea un objeto de Politica con la cantidad de transiciones especificada.
+   * 
+   * @param transiciones cantidad de transiciones de la Red De Petri
+   */
   public Politica(int transiciones) {
     vectorPrioridad = new Array2DRowRealMatrix();
     this.transiciones = transiciones;
@@ -31,6 +36,11 @@ public class Politica {
     }
   }
 
+  /**
+   * Lee la matriz de prioridad para las transiciones pasadas en el .txt.
+   * 
+   * @throws FileNotFoundException
+   */
   private void leerMatriz() throws FileNotFoundException {
     Scanner input = null;
     input = new Scanner(new File("src/main/java/vectorPrioridad.txt"));

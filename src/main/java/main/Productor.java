@@ -6,7 +6,7 @@ public class Productor implements Runnable {
   private int tareas = 0;
   private Monitor monitor;
 
-  public Productor(Monitor monitor) {
+  protected Productor(Monitor monitor) {
     this.monitor = monitor;
   }
 

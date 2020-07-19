@@ -111,7 +111,6 @@ public class Log {
     } else {
       logger.info("No se cumplen InvT");
     }
-
   }
 
   private boolean checkInvT(String input) {

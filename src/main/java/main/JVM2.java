@@ -5,7 +5,7 @@ import monitor.Monitor;
 public class JVM2 implements Runnable {
   private Monitor monitor;
 
-  public JVM2(Monitor monitor) {
+  protected JVM2(Monitor monitor) {
     this.monitor = monitor;
   }
 
