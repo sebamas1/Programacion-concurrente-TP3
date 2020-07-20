@@ -11,8 +11,8 @@ public class Proceso2 implements Runnable {
 
   public void run() {
     while (true) {
-      monitor.dispararTransicion(7);
-      monitor.dispararTransicion(8);
+      monitor.dispararTransicion(7); //T11
+      monitor.dispararTransicion(8); //T12
       Sistema.tareasHechasCore2++;
     }
   }

@@ -154,13 +154,11 @@ public class Politica {
 
   /**
    * Setea la senializacion de esta transicion en false, lo que permite que otras
-   * transiciones puedan tomar el monitor. Es protegida, porque aunque se usa casi
-   * exclusivamente de forma interna, las transiciones temporizadas deben poder
-   * "soltar" el monitor.
+   * transiciones puedan tomar el monitor.
    * 
    * @param indice representa a la transicion.
    */
-  protected void setSenializacionFalse(int indice) {
+  private void setSenializacionFalse(int indice) {
     senializadas.set(indice, false);
   }
 }

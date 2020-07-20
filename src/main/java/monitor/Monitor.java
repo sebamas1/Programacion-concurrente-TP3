@@ -50,12 +50,16 @@ public class Monitor {
         condiciones.get(indice).await();
       } catch (InterruptedException e) {
         System.out.println(Thread.currentThread().getName() + " interrumpido en la condicion de transicion " + indice);
+        Thread.currentThread().interrupt();
         return;
       }
     }
     encolados.set(indice, false);
     while (!RdP.disparar(indice)) {
-      politica.setSenializacionFalse(indice);
+      try {
+        condiciones.get(politica.despertar(sensiYencol(), RdP.getMatriz(), indice)).signal();
+      } catch (NullPointerException e) {
+      }
       long sleep = RdP.sleepTime(indice);
       lock.unlock();
       try {
@@ -71,6 +75,13 @@ public class Monitor {
       politica.reseteo();
     }
     log.actualizarLog(indice, RdP.getMatriz());
+    try {
+      condiciones.get(politica.despertar(sensiYencol(), RdP.getMatriz(), indice)).signal();
+    } catch (NullPointerException e) {
+    }
+    lock.unlock();
+  }
+  private ArrayList<Integer> sensiYencol(){
     Iterator<Integer> it = RdP.habilitacion().iterator();
     ArrayList<Integer> sensiYencol = new ArrayList<Integer>();
     while (it.hasNext()) {
@@ -79,10 +90,6 @@ public class Monitor {
         sensiYencol.add(aux);
       }
     }
-    try {
-      condiciones.get(politica.despertar(sensiYencol, RdP.getMatriz(), indice)).signal();
-    } catch (NullPointerException e) {
-    }
-    lock.unlock();
+    return sensiYencol;
   }
 }

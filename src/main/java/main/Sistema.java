@@ -60,6 +60,8 @@ public class Sistema {
     System.out.println("Tareas hechas por el core 1: " + (tareasHechasCore1));
     System.out.println("Tareas hechas por el core 2: " + (tareasHechasCore2));
     System.out.println("Tiempo de ejecucion total en milisegundos: " + (finall - inicio) / 1000000);
+
+    
     t1.stop();
     t2.stop();
     t3.stop();

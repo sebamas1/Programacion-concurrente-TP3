@@ -85,7 +85,8 @@ class RedDePetriTest {
    * a un ArrayList las transiciones que deberian estar sensibilizadas para un
    * momento dado y luego comprobar que la funcion de sensibilizado se comporta
    * correctamente. Luego se va a cambiar el estado de la red de petri, y se va a
-   * intentar de nuevo.
+   * intentar de nuevo. A cada paso, cuando se hace un disparo, se checkea que ese
+   * disparo no genere marcado invalido.
    * 
    * Ademas, se testea la funcion de habilitacion, que esta intimamente ligada a
    * la funcion de sensibilizado.
@@ -104,6 +105,9 @@ class RedDePetriTest {
       cantidadTransiciones.setAccessible(true);
       disparar.setAccessible(true);
       int transiciones = (int) cantidadTransiciones.invoke(rdp);
+
+      Method getMatriz = refleccion.getDeclaredMethod("getMatriz");
+      getMatriz.setAccessible(true);
 
       // estas lineas son para inicializar las cosas necesarias para testear el metodo
       // habilitacion de la red de petri.
@@ -128,6 +132,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.size() == 1);
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue((boolean) disparar.invoke(rdp, 0));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // me voy para el buffer del procesador 2(T10)
       transicionesSensibilizadas.add(6);
@@ -138,6 +143,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(6));
       assertTrue(transicionesHabilitadas.contains(11));
       assertTrue((boolean) disparar.invoke(rdp, 6));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // enciendo el procesador 2 (T8)
       transicionesSensibilizadas.add(0);
@@ -148,6 +154,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 14));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // powerUpDelay2
       transicionesSensibilizadas.add(0);
@@ -158,6 +165,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(4));
       assertTrue((boolean) disparar.invoke(rdp, 4));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto el inicio del proceso de un paquete en el buffer2(T11)
       transicionesSensibilizadas.add(0);
@@ -168,6 +176,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(7));
       assertTrue((boolean) disparar.invoke(rdp, 7));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // delay2 de proceso de paquete (T7)
       transicionesSensibilizadas.add(0);
@@ -178,6 +187,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(8));
       assertTrue((boolean) disparar.invoke(rdp, 8));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // apagado del procesador 2
       transicionesSensibilizadas.add(0);
@@ -188,6 +198,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(2));
       assertTrue((boolean) disparar.invoke(rdp, 2));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // segunda secuencia
 
@@ -198,6 +209,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.size() == 1);
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue((boolean) disparar.invoke(rdp, 0));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // voy por el buffer del procesador 1
       transicionesSensibilizadas.add(6);
@@ -208,6 +220,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(6));
       assertTrue(transicionesHabilitadas.contains(11));
       assertTrue((boolean) disparar.invoke(rdp, 11));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto arrival rate
       transicionesSensibilizadas.add(0);
@@ -218,6 +231,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue((boolean) disparar.invoke(rdp, 0));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // voy por el buffer del procesador 1
       transicionesSensibilizadas.add(6);
@@ -230,6 +244,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(11));
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue((boolean) disparar.invoke(rdp, 11));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto arrival rate
       transicionesSensibilizadas.add(0);
@@ -240,6 +255,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(0));
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue((boolean) disparar.invoke(rdp, 0));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // me voy por el buffer del procesador 2
       transicionesSensibilizadas.add(6);
@@ -252,6 +268,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(11));
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue((boolean) disparar.invoke(rdp, 6));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto arrival rate
       transicionesSensibilizadas.add(0);
@@ -264,6 +281,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 0));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // me voy por el buffer del procesador 2
       transicionesSensibilizadas.add(6);
@@ -278,6 +296,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 6));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto T0 que es la secuencia de prendido del procesador 1
       transicionesSensibilizadas.add(0);
@@ -290,6 +309,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue(transicionesHabilitadas.contains(5));
       assertTrue((boolean) disparar.invoke(rdp, 5));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto el powerUpDelay1
       transicionesSensibilizadas.add(0);
@@ -302,6 +322,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(3));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 3));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto JVM1 (T2)
       transicionesSensibilizadas.add(0);
@@ -316,6 +337,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(12));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 10));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto el inicio del proceso de un paquete en el buffer1(T5)
       transicionesSensibilizadas.add(0);
@@ -328,6 +350,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(12));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 12));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // delay1 de proceso de paquete (T7)
       transicionesSensibilizadas.add(0);
@@ -340,6 +363,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(13));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 13));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // ejecuto el inicio del proceso de un paquete en el buffer1(T5)
       transicionesSensibilizadas.add(0);
@@ -352,6 +376,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(12));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 12));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // delay1 de proceso de paquete (T7)
       transicionesSensibilizadas.add(0);
@@ -364,6 +389,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(13));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 13));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // apagado del procesador 1
       transicionesSensibilizadas.add(0);
@@ -376,6 +402,7 @@ class RedDePetriTest {
       assertTrue(transicionesHabilitadas.contains(1));
       assertTrue(transicionesHabilitadas.contains(14));
       assertTrue((boolean) disparar.invoke(rdp, 1));
+      checkearDisparo(getMatriz, rdp, transiciones);
 
       // se fija si el estado es el esperado
       transicionesSensibilizadas.add(0);
@@ -390,6 +417,18 @@ class RedDePetriTest {
       e.printStackTrace();
     } catch (NoSuchFieldException e) {
       e.printStackTrace();
+    }
+  }
+
+  private void checkearDisparo(Method getMatriz, RedDePetri rdp, int transiciones) {
+    for (int i = 0; i < transiciones; i++) {
+      RealMatrix matriz;
+      try {
+        matriz = (RealMatrix) getMatriz.invoke(rdp);
+        assertTrue(matriz.getEntry(i, 0) >= 0);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -519,12 +558,12 @@ class RedDePetriTest {
         assertTrue((boolean) disparar.invoke(rdp, 0));
         assertTrue((boolean) disparar.invoke(rdp, 6));
       }
-      
-      for(int i = 0; i < 500 ; i++) {
+
+      for (int i = 0; i < 500; i++) {
         assertTrue((boolean) disparar.invoke(rdp, 7));
         assertTrue(!(boolean) disparar.invoke(rdp, 8));
         assertTrue((System.currentTimeMillis() - marcasTiempo.get(8) + (long) sleepTime.invoke(rdp, 8)
-        - alfaReal.getEntry(0, 8) < tolerancia));
+            - alfaReal.getEntry(0, 8) < tolerancia));
         Thread.sleep((long) sleepTime.invoke(rdp, 8));
         assertTrue((boolean) disparar.invoke(rdp, 8));
       }
