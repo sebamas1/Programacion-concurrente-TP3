@@ -15,6 +15,13 @@ public class Monitor {
   private final ArrayList<Boolean> encolados;
   private Log log;
 
+  /**
+   * Construye el monitor, con todos los objetos necesarios para controlar la
+   * concurrencia.
+   * 
+   * @param log objeto necesario para actualizar un txt cada vez que se realiza un
+   *            disparo.
+   */
   public Monitor(Log log) {
     lock = new ReentrantLock(true);
     RdP = new RedDePetri();
@@ -28,35 +35,53 @@ public class Monitor {
     this.log = log;
   }
 
+  /**
+   * Dispara la transicion que corresponde al indice pasado como argumento.
+   * ThreadSafe: solo dispara la transicion cuando la politica y el marcado actual
+   * de la red de petri lo permiten.
+   * 
+   * @param indice representa a la transicion que se desea disparar.
+   */
   public void dispararTransicion(int indice) {
     lock.lock();
-
     while (!RdP.sensibilizadoTransicion(indice) || !politica.senializacion(indice)) {
       encolados.set(indice, true);
       try {
         condiciones.get(indice).await();
       } catch (InterruptedException e) {
         System.out.println(Thread.currentThread().getName() + " interrumpido en la condicion de transicion " + indice);
+        Thread.currentThread().interrupt();
         return;
       }
     }
     encolados.set(indice, false);
-    // pensa si es posible que mientras un thread esta intentando dispararse, venga
-    // otro a cambiarle el sensibilizado
     while (!RdP.disparar(indice)) {
-      politica.setSenializacionFalse(indice);
+      try {
+        condiciones.get(politica.despertar(sensiYencol(), RdP.getMatriz(), indice)).signal();
+      } catch (NullPointerException e) {
+      }
       long sleep = RdP.sleepTime(indice);
       lock.unlock();
       try {
         Thread.sleep(sleep);
-      } catch (InterruptedException | IllegalArgumentException ex) {
+      } catch (IllegalArgumentException e) {
         System.out.println("Superado el BETA! Soy " + indice);
+        return;
+      } catch(InterruptedException e) {
+        e.printStackTrace();
         return;
       }
       lock.lock();
       politica.reseteo();
     }
     log.actualizarLog(indice, RdP.getMatriz());
+    try {
+      condiciones.get(politica.despertar(sensiYencol(), RdP.getMatriz(), indice)).signal();
+    } catch (NullPointerException e) {
+    }
+    lock.unlock();
+  }
+  private ArrayList<Integer> sensiYencol(){
     Iterator<Integer> it = RdP.habilitacion().iterator();
     ArrayList<Integer> sensiYencol = new ArrayList<Integer>();
     while (it.hasNext()) {
@@ -65,10 +90,6 @@ public class Monitor {
         sensiYencol.add(aux);
       }
     }
-    try {
-      condiciones.get(politica.despertar(sensiYencol, RdP.getMatriz(), indice)).signal();
-    } catch (NullPointerException e) {
-    }
-    lock.unlock();
+    return sensiYencol;
   }
 }

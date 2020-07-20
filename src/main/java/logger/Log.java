@@ -22,7 +22,6 @@ public class Log {
   private final static Logger logger = Logger.getLogger("log.txt");
   private RealMatrix mDReal;
   private RealMatrix mOReal;
-  // private HashMap<Integer, String> transiciones;
 
   public Log() {
     LogManager.getLogManager().reset();
@@ -35,16 +34,23 @@ public class Log {
       logger.addHandler(fh);
     } catch (IOException e) {
       System.out.println("NO SE GUARDO EL LOG");
+      e.printStackTrace();
     }
     try {
       leerMatriz();
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
     }
-    invariantesT.add(1);  invariantesT.add(3);
-    invariantesT.add(5);  invariantesT.add(14);
-    invariantesT.add(4);  invariantesT.add(2);
-    invariantesT.add(7);  invariantesT.add(8);
-    invariantesT.add(12); invariantesT.add(13);
+    invariantesT.add(1);
+    invariantesT.add(3);
+    invariantesT.add(5);
+    invariantesT.add(14);
+    invariantesT.add(4);
+    invariantesT.add(2);
+    invariantesT.add(7);
+    invariantesT.add(8);
+    invariantesT.add(12);
+    invariantesT.add(13);
   }
 
   private void leerMatriz() throws FileNotFoundException {
@@ -105,32 +111,30 @@ public class Log {
     } else {
       logger.info("No se cumplen InvT");
     }
-
   }
 
+  private boolean checkInvT(String input) {
+    String resultado = histInvT;
+    // Invariante 12-13
+    Pattern invT1 = Pattern.compile("\\b12\\b((\\s|.)*?)\\b13\\b");
+    Matcher regexMatcher = invT1.matcher(resultado);
+    resultado = regexMatcher.replaceAll("$1");
 
-private boolean checkInvT(String input) {
-      String resultado = histInvT;
-      //Invariante 12-13
-      Pattern invT1 = Pattern.compile("\\b12\\b((\\s|.)*?)\\b13\\b");
-      Matcher regexMatcher = invT1.matcher(resultado);
-      resultado = regexMatcher.replaceAll("$1");
-  
-      // //Invariante 7-8
-      invT1 = Pattern.compile("\\b14\\b((\\s|.)*?)\\b4\\b((\\s|.)*?)\\b2\\b");
-      regexMatcher = invT1.matcher(resultado);
-      resultado = regexMatcher.replaceAll("$1$3");
-  
-      invT1 = Pattern.compile("\\b7\\b((\\s|.)*?)\\b8\\b");
-      regexMatcher = invT1.matcher(resultado);
-      resultado = regexMatcher.replaceAll("$1");
-  
-      invT1 = Pattern.compile("\\b5\\b((\\s|.)*?)\\b3\\b((\\s|.)*?)\\b1\\b");
-      regexMatcher = invT1.matcher(resultado);
-      resultado = regexMatcher.replaceAll("$1$3");
+    // //Invariante 7-8
+    invT1 = Pattern.compile("\\b14\\b((\\s|.)*?)\\b4\\b((\\s|.)*?)\\b2\\b");
+    regexMatcher = invT1.matcher(resultado);
+    resultado = regexMatcher.replaceAll("$1$3");
 
-      invT1 = Pattern.compile("[^\\s]+");
-      regexMatcher = invT1.matcher(resultado);
-      return !regexMatcher.find();
-}
+    invT1 = Pattern.compile("\\b7\\b((\\s|.)*?)\\b8\\b");
+    regexMatcher = invT1.matcher(resultado);
+    resultado = regexMatcher.replaceAll("$1");
+
+    invT1 = Pattern.compile("\\b5\\b((\\s|.)*?)\\b3\\b((\\s|.)*?)\\b1\\b");
+    regexMatcher = invT1.matcher(resultado);
+    resultado = regexMatcher.replaceAll("$1$3");
+
+    invT1 = Pattern.compile("[^\\s]+");
+    regexMatcher = invT1.matcher(resultado);
+    return !regexMatcher.find();
+  }
 }

@@ -20,7 +20,7 @@ class PoliticaTest {
   @SuppressWarnings("unchecked")
   @Test
   void senializacionTest() {
-    Politica politica = new Politica(15); // me doy el lujo de hardcodear porque los test estan hechos para esta rdp
+    Politica politica = new Politica(15);
     Class<?> refleccion = politica.getClass();
     try {
       Method senializacion = refleccion.getDeclaredMethod("senializacion", new Class[] { int.class });
@@ -78,7 +78,7 @@ class PoliticaTest {
       RealMatrix objetoVectorPrioridad = (RealMatrix) vectorPrioridad.get(politica);
       ArrayList<Integer> transiciones = new ArrayList<Integer>();
       ArrayList<Boolean> arraySenializadas = (ArrayList<Boolean>) senializadas.get(politica);
-      for (int i = 0; i < 15; i++) { // hardcode
+      for (int i = 0; i < 15; i++) {
         transiciones.add(i);
       }
       for (int i = 0; i < 1000; i++) {
