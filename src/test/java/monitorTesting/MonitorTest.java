@@ -25,7 +25,7 @@ class MonitorTest {
    * Monitor. Crea un thread para casi todas las transiciones existentes y luego
    * ve que los estados de los threads sean los correctos, y que los threads que
    * quedan encolados sean los correctos. Esto esta verificando, que cuando llega
-   * el arrival rate, notifica y señaliza correctamente a los threads que tiene
+   * el arrival rate, notifica y senializa correctamente a los threads que tiene
    * que notificar, y el monitor los deja hacer el trabajo que tienen que hacer.
    * 
    * NOTA: este test podria llegar a fallar para distintas PC, el tiempo de gracia
@@ -164,7 +164,7 @@ class MonitorTest {
       assertTrue(!objetoEncolados.get(11)); // me fijo que sigan encolados las transiciones correspondientes al core 2
       assertTrue(!objetoEncolados.get(12)); // porque por prioridad, seguro se ejecuta todo lo del core 1
       assertTrue(!objetoEncolados.get(13));
-      assertTrue(objetoEncolados.get(14)); // con todo esto veo que el sistema de señalizacion funciona bien
+      assertTrue(objetoEncolados.get(14)); // con todo esto veo que el sistema de senializacion funciona bien
 
       for (int i = 0; i < cantTransiciones; i++) {
         assertTrue(!objetoSenializadas.get(i));
@@ -188,7 +188,7 @@ class MonitorTest {
       assertTrue(!objetoEncolados.get(11));
       assertTrue(!objetoEncolados.get(12));
       assertTrue(!objetoEncolados.get(13));// me fijo que nadie este encolado
-      assertTrue(!objetoEncolados.get(14)); // con esto vuelvo a verificar que el sistema de señalizado funciona bien
+      assertTrue(!objetoEncolados.get(14)); // con esto vuelvo a verificar que el sistema de senializado funciona bien
 
       // a partir de aca, envio 2 productos a cada buffer
       disparar6 = new Thread(disparador6);
@@ -212,10 +212,10 @@ class MonitorTest {
       disparar11 = new Thread(disparador11);
       disparar6.start();
       disparar11.start();
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
       disparar0 = new Thread(disparador0);
       disparar0.start();
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
       disparar0 = new Thread(disparador0);
       disparar0.start();
       Thread.sleep(tiempoGracia);
@@ -273,7 +273,7 @@ class MonitorTest {
       disparar8.start();
       disparar13.start();
 
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
 
       assertEquals("WAITING", disparar8.getState().toString());
       assertEquals("WAITING", disparar13.getState().toString());
@@ -295,19 +295,17 @@ class MonitorTest {
       assertEquals("TERMINATED", disparar8.getState().toString());
       assertEquals("TERMINATED", disparar14.getState().toString()); // me fijo que todos los threads esten como deben
       assertEquals("TERMINATED", disparar4.getState().toString()); // estar, esto me asegura que el sistema de
-      assertEquals("TERMINATED", disparar9.getState().toString()); // señalizacion esta andando bien
+      assertEquals("TERMINATED", disparar9.getState().toString()); // senializacion esta andando bien
       assertEquals("TERMINATED", disparar10.getState().toString());
       assertEquals("WAITING", disparar1.getState().toString());// estos dos quedan prendidos porque quedan productos en
       assertEquals("WAITING", disparar2.getState().toString()); // el buffer
 
       assertTrue(((disparador13.getFinal() - disparador12.getInicio()) / 1000000) >= alfas.getEntry(0, 8));
-      System.out.println(((disparador13.getFinal() - disparador12.getInicio()) / 1000000));
       // esto ultimo se fija que el tiempo de espera para la transicion sea el que se
       // debe
       // es de 40ms para un service rate de 20ms, pero si restas los tiempos de
       // gracia, mas o menos queda bien
       assertTrue(((disparador8.getFinal() - disparador7.getInicio()) / 1000000) >= alfas.getEntry(0, 13));
-      System.out.println(((disparador8.getFinal() - disparador7.getInicio()) / 1000000));
 
       disparar12 = new Thread(disparador12);
       disparar13 = new Thread(disparador13);

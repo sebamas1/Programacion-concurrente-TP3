@@ -5,11 +5,21 @@ import logger.Log;
 import monitor.Monitor;
 
 public class Sistema {
-  protected static final int TAREASTOTALES = 600;
+  public static final int TAREASTOTALES = 600;
   protected static int tareasHechasCore1 = 0;
   protected static int tareasHechasCore2 = 0;
   protected static boolean running = true;
+  private final long inicio;
+  private final long finall;
 
+  /**
+   * Construye el sistema del TP3. Crea los objetos runnable necesarios y se los
+   * pasa a los distintos threads. Luego, inicia el programa y espera a que se
+   * procesen los productos totales especificados, momento en el cual se espera un
+   * tiempo de gracia, y luego se lee el log, y se imprimen en consola los
+   * resultados del programa. Todos los threads que hayan quedado vivos, se los
+   * "mata".
+   */
   @SuppressWarnings("deprecation")
   public Sistema() {
     Log lg = new Log();
@@ -42,11 +52,11 @@ public class Sistema {
     t8.start();
     t9.start();
 
-    long inicio = System.nanoTime();
+    inicio = System.nanoTime();
     while ((tareasHechasCore1 + tareasHechasCore2) < TAREASTOTALES) {
       System.out.print("");
     }
-    long finall = System.nanoTime();
+    finall = System.nanoTime();
     try {
       Thread.sleep(1000);
     } catch (Exception e) {
@@ -61,7 +71,6 @@ public class Sistema {
     System.out.println("Tareas hechas por el core 2: " + (tareasHechasCore2));
     System.out.println("Tiempo de ejecucion total en milisegundos: " + (finall - inicio) / 1000000);
 
-    
     t1.stop();
     t2.stop();
     t3.stop();
