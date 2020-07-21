@@ -67,7 +67,7 @@ public class Monitor {
       } catch (IllegalArgumentException e) {
         System.out.println("Superado el BETA! Soy " + indice);
         return;
-      } catch(InterruptedException e) {
+      } catch (InterruptedException e) {
         e.printStackTrace();
         return;
       }
@@ -81,7 +81,16 @@ public class Monitor {
     }
     lock.unlock();
   }
-  private ArrayList<Integer> sensiYencol(){
+
+  /**
+   * Toma la lista de encolados y se fija que tambien estan sensibilizados. Si eso
+   * es cierto, los agrega a un array de sensibilizados y encolados y una vez
+   * terminado, devuelve ese array.
+   * 
+   * @return arrayList con los indices de todas las transiciones encoladas en el
+   *         monitor, y sensibilizadas al mismo tiempo.
+   */
+  private ArrayList<Integer> sensiYencol() {
     Iterator<Integer> it = RdP.habilitacion().iterator();
     ArrayList<Integer> sensiYencol = new ArrayList<Integer>();
     while (it.hasNext()) {

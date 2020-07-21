@@ -212,10 +212,10 @@ class MonitorTest {
       disparar11 = new Thread(disparador11);
       disparar6.start();
       disparar11.start();
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
       disparar0 = new Thread(disparador0);
       disparar0.start();
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
       disparar0 = new Thread(disparador0);
       disparar0.start();
       Thread.sleep(tiempoGracia);
@@ -273,7 +273,7 @@ class MonitorTest {
       disparar8.start();
       disparar13.start();
 
-      Thread.sleep(tiempoGracia / 10);
+      Thread.sleep(tiempoGracia);
 
       assertEquals("WAITING", disparar8.getState().toString());
       assertEquals("WAITING", disparar13.getState().toString());
@@ -301,13 +301,11 @@ class MonitorTest {
       assertEquals("WAITING", disparar2.getState().toString()); // el buffer
 
       assertTrue(((disparador13.getFinal() - disparador12.getInicio()) / 1000000) >= alfas.getEntry(0, 8));
-      System.out.println(((disparador13.getFinal() - disparador12.getInicio()) / 1000000));
       // esto ultimo se fija que el tiempo de espera para la transicion sea el que se
       // debe
       // es de 40ms para un service rate de 20ms, pero si restas los tiempos de
       // gracia, mas o menos queda bien
       assertTrue(((disparador8.getFinal() - disparador7.getInicio()) / 1000000) >= alfas.getEntry(0, 13));
-      System.out.println(((disparador8.getFinal() - disparador7.getInicio()) / 1000000));
 
       disparar12 = new Thread(disparador12);
       disparar13 = new Thread(disparador13);

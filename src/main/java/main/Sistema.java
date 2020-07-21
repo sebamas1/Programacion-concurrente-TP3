@@ -10,6 +10,14 @@ public class Sistema {
   protected static int tareasHechasCore2 = 0;
   protected static boolean running = true;
 
+  /**
+   * Construye el sistema del TP3. Crea los objetos runnable necesarios y se los
+   * pasa a los distintos threads. Luego, inicia el programa y espera a que se
+   * procesen los productos totales especificados, momento en el cual se espera un
+   * tiempo de gracia, y luego se lee el log, y se imprimen en consola los
+   * resultados del programa. Todos los threads que hayan quedado vivos, se los
+   * "mata".
+   */
   @SuppressWarnings("deprecation")
   public Sistema() {
     Log lg = new Log();
@@ -61,7 +69,6 @@ public class Sistema {
     System.out.println("Tareas hechas por el core 2: " + (tareasHechasCore2));
     System.out.println("Tiempo de ejecucion total en milisegundos: " + (finall - inicio) / 1000000);
 
-    
     t1.stop();
     t2.stop();
     t3.stop();

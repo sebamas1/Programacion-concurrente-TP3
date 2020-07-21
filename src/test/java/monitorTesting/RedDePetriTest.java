@@ -420,9 +420,24 @@ class RedDePetriTest {
     }
   }
 
+  /**
+   * Se fija que el marcado sea valido.
+   * 
+   * @param getMatriz    metodo para obtener una copia de marcado actual.
+   * @param rdp          objeto sobre el que se invoca el metodo getMatriz()
+   *                     pasado como argumento.
+   * @param transiciones es la cantidad de transiciones existente.
+   */
   private void checkearDisparo(Method getMatriz, RedDePetri rdp, int transiciones) {
-    for (int i = 0; i < transiciones; i++) {
-      RealMatrix matriz;
+    RealMatrix matriz;
+    int plazas = -1;
+    try {
+      matriz = (RealMatrix) getMatriz.invoke(rdp);
+      plazas = matriz.getRowDimension();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    for (int i = 0; i < plazas; i++) {
       try {
         matriz = (RealMatrix) getMatriz.invoke(rdp);
         assertTrue(matriz.getEntry(i, 0) >= 0);
@@ -432,6 +447,23 @@ class RedDePetriTest {
     }
   }
 
+  /**
+   * Checkea que el array de las sensibilizadas pasado como argumento, este
+   * sensibilizado segun la red de petri.
+   * 
+   * @param sensibilizadas es un array conteniendo el indice de las transiciones
+   *                       sensibilizadas.
+   * @param transiciones   cantidad de transiciones de la red de petri.
+   * @param sensibilizado  es el metodo de sensibilizado de la red de petri.
+   * @param rdp            es el objeto de la red de petri, sobre el que se invoca
+   *                       el metodo sensibilizado.
+   * @throws IllegalAccessException    si el metodo pasado como argumento no es
+   *                                   accesible.
+   * @throws IllegalArgumentException  si los parametros pasados al metodo de
+   *                                   sensibilizado son ilegales
+   * @throws InvocationTargetException si el metodo se invoca incorectamente el
+   *                                   metodo de alguna forma.
+   */
   private void checkearSensibilizado(ArrayList<Integer> sensibilizadas, int transiciones, Method sensibilizado,
       RedDePetri rdp) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
@@ -519,6 +551,13 @@ class RedDePetriTest {
     }
   }
 
+  /**
+   * Unit test para el metodo sleepTime. Se fija que este metodo devuelva el sleep
+   * time debido.Intenta realizar disparos que estan fuera de la ventana de tiempo
+   * y se fija si la red de petri se lo permite. Luego le pide al sleepTime
+   * cuanto tiempo deberia dormir para que se le deje hacer el disparo, y se fija
+   * si en este caso si puede realizar el disparo.
+   */
   @SuppressWarnings("unchecked")
   @Test
   void sleepTimeTest() {

@@ -23,6 +23,11 @@ public class RedDePetri {
   private int columnas;
   private int filas;
 
+  /**
+   * Lee todas las matrices necesarias para el desarrollo del programa. Crea la
+   * matriz de incidencia y setea los timeStamp para saber que transiciones estan
+   * sensibilizadas inicialmente.
+   */
   public RedDePetri() {
     try {
       leerIncidenciaPositiva();
@@ -51,6 +56,13 @@ public class RedDePetri {
 
   }
 
+  /**
+   * Lee la matriz de incidencia positiva que esta en src/main/java y que es un
+   * .txt. El archivo debe llamarse "incidenciaPositiva".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerIncidenciaPositiva() throws FileNotFoundException {
     boolean leido = false;
     Scanner input = null;
@@ -83,6 +95,13 @@ public class RedDePetri {
     input.close();
   }
 
+  /**
+   * Lee la matriz de incidencia negativa que esta en src/main/java y que es un
+   * .txt. El archivo debe llamarse "incidenciaNegativa".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerIncidenciaNegativa() throws FileNotFoundException {
     boolean leido = false;
     Scanner input = null;
@@ -113,6 +132,13 @@ public class RedDePetri {
     input.close();
   }
 
+  /**
+   * Lee la matriz de marcado inicial que esta en src/main/java y que es un .txt.
+   * El archivo debe llamarse "inicial".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerInicial() throws FileNotFoundException {
     Scanner input = null;
     input = new Scanner(new File("src/main/java/inicial.txt"));
@@ -124,6 +150,13 @@ public class RedDePetri {
     input.close();
   }
 
+  /**
+   * Lee la matriz de alfa que esta en src/main/java y que es un .txt. El archivo
+   * debe llamarse "alfa".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerAlfa() throws FileNotFoundException {
     Scanner input = null;
     input = new Scanner(new File("src/main/java/alfa.txt"));
@@ -135,6 +168,13 @@ public class RedDePetri {
     input.close();
   }
 
+  /**
+   * Lee la matriz beta que esta en src/main/java y que es un .txt. El archivo
+   * debe llamarse "beta".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerBeta() throws FileNotFoundException {
     Scanner input = null;
     input = new Scanner(new File("src/main/java/beta.txt"));
@@ -146,6 +186,13 @@ public class RedDePetri {
     input.close();
   }
 
+  /**
+   * Lee la matriz de inhibicion que esta en src/main/java y que es un .txt. El
+   * archivo debe llamarse "inhibicion".
+   * 
+   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
+   *                               especificado.
+   */
   private void leerInhibicion() throws FileNotFoundException {
     boolean leido = false;
     Scanner input = null;
@@ -383,15 +430,31 @@ public class RedDePetri {
     return sensibilizado(indice, mAReal);
   }
 
+  /**
+   * Retorna la cantidad de transiciones, que es igual a la cantidad de columnas
+   * de la matriz de la red de petri.
+   * 
+   * @return cantidad de transiciones.
+   */
   protected int getCantTransiciones() {
     return columnas;
   }
 
+  /**
+   * Retorna una copia de la matriz con el marcado actual.
+   * 
+   * @return RealMatrix con el marcado actual, al momento de llamar esta funcion.
+   */
   protected RealMatrix getMatriz() {
-    return mAReal;
+    return mAReal.copy();
   }
 
+  /**
+   * Devuelve una copia del marcado inicial que tuvo la red de petri.
+   * 
+   * @return RealMatrix representando el marcado inicial.
+   */
   protected RealMatrix getInicial() {
-    return m0Real;
+    return m0Real.copy();
   }
 }
