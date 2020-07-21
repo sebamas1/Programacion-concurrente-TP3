@@ -5,10 +5,12 @@ import logger.Log;
 import monitor.Monitor;
 
 public class Sistema {
-  protected static final int TAREASTOTALES = 600;
+  public static final int TAREASTOTALES = 600;
   protected static int tareasHechasCore1 = 0;
   protected static int tareasHechasCore2 = 0;
   protected static boolean running = true;
+  private final long inicio;
+  private final long finall;
 
   /**
    * Construye el sistema del TP3. Crea los objetos runnable necesarios y se los
@@ -50,11 +52,11 @@ public class Sistema {
     t8.start();
     t9.start();
 
-    long inicio = System.nanoTime();
+    inicio = System.nanoTime();
     while ((tareasHechasCore1 + tareasHechasCore2) < TAREASTOTALES) {
       System.out.print("");
     }
-    long finall = System.nanoTime();
+    finall = System.nanoTime();
     try {
       Thread.sleep(1000);
     } catch (Exception e) {
