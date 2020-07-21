@@ -150,15 +150,17 @@ public class Log {
       logger.info("El marcado final esperado, coincide con el real.");
     }
     histInvT += " ";
-    if (this.checkInvT(histInvT)) {
-      logger.info("Todo en orden invT.");
-    } else {
-      logger.info("No se cumplen InvT.");
-    }
+    
     if (flagPInvariants) {
       logger.info("No se cumplen los invP.");
     } else {
       logger.info("Todo en orden invP.");
+    } 
+    
+    if (this.checkInvT(histInvT)) {
+      logger.info("Todo en orden invT.");
+    } else {
+      logger.info("No se cumplen InvT.");
     }
   }
 
