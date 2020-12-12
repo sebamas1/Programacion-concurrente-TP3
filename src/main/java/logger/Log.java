@@ -174,24 +174,24 @@ public class Log {
   private boolean checkInvT(String input) {
     String resultado = histInvT;
     // Invariante 12-13 T5 -T7
-    Pattern invT1 = Pattern.compile("\\b12\\b((\\s|.)*?)\\b13\\b");
+    Pattern invT1 = Pattern.compile("\\b12\\b([\\s0-9]*?)\\b13\\b");
     Matcher regexMatcher = invT1.matcher(resultado);
     resultado = regexMatcher.replaceAll("$1");
 
     //T8 - Power up delay 2 - PowerDownThreashold 2
-    invT1 = Pattern.compile("\\b14\\b((\\s|.)*?)\\b4\\b((\\s|.)*?)\\b2\\b");
+    invT1 = Pattern.compile("\\b14\\b([\\s0-9]*?)\\b4\\b([\\s0-9]*?)\\b2\\b");
     regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1$3");
+    resultado = regexMatcher.replaceAll("$1$2");
     
    // T11 - T12
-    invT1 = Pattern.compile("\\b7\\b((\\s|.)*?)\\b8\\b");
+    invT1 = Pattern.compile("\\b7\\b([\\s0-9]*?)\\b8\\b");
     regexMatcher = invT1.matcher(resultado);
     resultado = regexMatcher.replaceAll("$1");
 
     //T0 - PowerUpDelay 1 - PowerDown threshold 1
-    invT1 = Pattern.compile("\\b5\\b((\\s|.)*?)\\b3\\b((\\s|.)*?)\\b1\\b");
+    invT1 = Pattern.compile("\\b5\\b([\\s0-9]*?)\\b3\\b([\\s0-9]*?)\\b1\\b");
     regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1$3");
+    resultado = regexMatcher.replaceAll("$1$2");
 
     invT1 = Pattern.compile("[^\\s]+");
     regexMatcher = invT1.matcher(resultado);

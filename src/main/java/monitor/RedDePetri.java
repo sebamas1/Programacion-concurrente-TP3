@@ -361,7 +361,7 @@ public class RedDePetri {
         }
       }
     }
-    return true; // esto esta mal
+    return true;
   }
 
   /**
