@@ -36,7 +36,7 @@ public class RedDePetri {
       this.inhibicionReal = leerMatriz("src/main/java/inhibicion.txt");
       this.alfaReal = leerMatriz("src/main/java/alfa.txt");
       this.betaReal = leerMatriz("src/main/java/beta.txt");
-      leerInicial();
+      this.m0Real = leerMatriz("src/main/java/inicial.txt").transpose();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       System.out.println("No se encontro el archivo para leer la matriz.");
@@ -109,25 +109,6 @@ public class RedDePetri {
     input.close();
     return new Array2DRowRealMatrix(matriz);
     }
-
-
-  /**
-   * Lee la matriz de marcado inicial que esta en src/main/java y que es un .txt.
-   * El archivo debe llamarse "inicial".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerInicial() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/inicial.txt"));
-    double[][] m0 = new double[filas][1];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[i][0] = input.nextInt();
-    }
-    m0Real = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
 
   /**
    * Se fija si la transicion esta dentro de la ventana de tiempo, en cuyo caso
