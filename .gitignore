@@ -3,6 +3,8 @@
 
 # Ignore Gradle build output directory
 build
-
+.idea
+bin
+.vscode
 # ignore all Registro files and Registro folders
 Registro*
