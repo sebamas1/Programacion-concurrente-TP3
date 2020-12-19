@@ -34,9 +34,9 @@ public class RedDePetri {
       this.incidenciaRealPositiva = leerMatriz("src/main/java/incidenciaPositiva.txt");
       this.incidenciaRealNegativa = leerMatriz("src/main/java/incidenciaNegativa.txt");
       this.inhibicionReal = leerMatriz("src/main/java/inhibicion.txt");
+      this.alfaReal = leerMatriz("src/main/java/alfa.txt");
+      this.betaReal = leerMatriz("src/main/java/beta.txt");
       leerInicial();
-      leerAlfa();
-      leerBeta();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       System.out.println("No se encontro el archivo para leer la matriz.");
@@ -95,6 +95,7 @@ public class RedDePetri {
       leido = true;
       colReader.close();
     }
+    System.out.println("\n\n\n" + rows + "  " + columns);
     double[][] matriz = new double[rows][columns];
     input.close();
     input = new Scanner(new File(path));
@@ -127,43 +128,6 @@ public class RedDePetri {
     m0Real = new Array2DRowRealMatrix(m0);
     input.close();
   }
-
-  /**
-   * Lee la matriz de alfa que esta en src/main/java y que es un .txt. El archivo
-   * debe llamarse "alfa".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerAlfa() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/alfa.txt"));
-    double[][] m0 = new double[1][columnas];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[0][i] = input.nextInt();
-    }
-    alfaReal = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
-
-  /**
-   * Lee la matriz beta que esta en src/main/java y que es un .txt. El archivo
-   * debe llamarse "beta".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerBeta() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/beta.txt"));
-    double[][] m0 = new double[1][columnas];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[0][i] = input.nextInt();
-    }
-    betaReal = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
-
 
   /**
    * Se fija si la transicion esta dentro de la ventana de tiempo, en cuyo caso
