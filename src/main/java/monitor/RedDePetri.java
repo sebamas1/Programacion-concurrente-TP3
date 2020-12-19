@@ -31,7 +31,7 @@ public class RedDePetri {
   public RedDePetri() {
     try {
       setDimensions("src/main/java/incidenciaPositiva.txt");
-      leerIncidenciaPositiva();
+      this.incidenciaRealPositiva = leerMatriz("src/main/java/incidenciaPositiva.txt");
       leerIncidenciaNegativa();
       leerInhibicion();
       leerInicial();
@@ -74,9 +74,42 @@ public class RedDePetri {
       leido = true;
       colReader.close();
     }
+    input.close();
     columnas = columns;
     filas = rows;
   }
+
+  private Array2DRowRealMatrix leerMatriz(String path) throws FileNotFoundException {
+    boolean leido = false;
+    Scanner input = null;
+    input = new Scanner(new File("src/main/java/incidenciaPositiva.txt"));
+    int rows = 0;
+    int columns = 0;
+    while (input.hasNextLine()) {
+      ++rows;
+      Scanner colReader = new Scanner(input.nextLine());
+      while (colReader.hasNextInt() && !leido) {
+        ++columns;
+        colReader.nextInt();
+      }
+      leido = true;
+      colReader.close();
+    }
+    double[][] incidenciaPositiva = new double[rows][columns];
+    input.close();
+    input = new Scanner(new File("src/main/java/incidenciaPositiva.txt"));
+    for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < columns; ++j) {
+        if (input.hasNextInt()) {
+          incidenciaPositiva[i][j] = input.nextInt();
+        }
+      }
+    }
+    input.close();
+    return new Array2DRowRealMatrix(incidenciaPositiva);
+    }
+
+
   /**
    * Lee la matriz de incidencia positiva que esta en src/main/java y que es un
    * .txt. El archivo debe llamarse "incidenciaPositiva".
