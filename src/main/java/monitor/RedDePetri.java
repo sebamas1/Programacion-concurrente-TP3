@@ -95,7 +95,6 @@ public class RedDePetri {
       leido = true;
       colReader.close();
     }
-    System.out.println("\n\n\n" + rows + "  " + columns);
     double[][] matriz = new double[rows][columns];
     input.close();
     input = new Scanner(new File(path));
