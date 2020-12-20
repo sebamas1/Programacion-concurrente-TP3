@@ -1,8 +1,10 @@
 # Ignore Gradle project-specific cache directory
 .gradle
+bin/
 
 # Ignore Gradle build output directory
 build
-
+.idea
+.vscode
 # ignore all Registro files and Registro folders
 Registro*

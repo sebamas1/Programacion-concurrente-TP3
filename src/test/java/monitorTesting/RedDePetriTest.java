@@ -10,12 +10,21 @@ import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math3.linear.RealMatrix;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import monitor.*;
 
 @SuppressWarnings("rawtypes")
 class RedDePetriTest {
+  RedDePetri rdp;
+  Class<?> refleccion;
+
+  @BeforeEach
+  void before() {
+    rdp = new RedDePetri();
+    refleccion = rdp.getClass();
+  }
 
   /**
    * Unit test para disparar(). Genera alfas y betas al azar, y se va fijando para
@@ -23,8 +32,6 @@ class RedDePetriTest {
    */
   @Test
   void disparoTest() {
-    RedDePetri rdp = new RedDePetri();
-    Class<?> refleccion = rdp.getClass();
     Class[] parameterTypes = new Class[] { int.class };
     try {
       Method disparo = refleccion.getDeclaredMethod("disparar", parameterTypes);
@@ -93,8 +100,6 @@ class RedDePetriTest {
    */
   @Test
   void sensibilizadoYhabilitacionTest() {
-    RedDePetri rdp = new RedDePetri();
-    Class<?> refleccion = rdp.getClass();
     ArrayList<Integer> transicionesSensibilizadas = new ArrayList<Integer>();
 
     try {
@@ -484,8 +489,6 @@ class RedDePetriTest {
   @SuppressWarnings("unchecked")
   @Test
   void setTimeStampTest() {
-    RedDePetri rdp = new RedDePetri();
-    Class<?> refleccion = rdp.getClass();
     try {
       Method setTimeStamp = refleccion.getDeclaredMethod("setTimeStamp");
       Method disparar = refleccion.getDeclaredMethod("disparar", new Class[] { int.class });

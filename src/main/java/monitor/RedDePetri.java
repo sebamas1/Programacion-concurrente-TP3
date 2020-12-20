@@ -30,12 +30,13 @@ public class RedDePetri {
    */
   public RedDePetri() {
     try {
-      leerIncidenciaPositiva();
-      leerIncidenciaNegativa();
-      leerInhibicion();
-      leerInicial();
-      leerAlfa();
-      leerBeta();
+      setDimensions("src/main/java/incidenciaPositiva.txt");
+      this.incidenciaRealPositiva = leerMatriz("src/main/java/incidenciaPositiva.txt");
+      this.incidenciaRealNegativa = leerMatriz("src/main/java/incidenciaNegativa.txt");
+      this.inhibicionReal = leerMatriz("src/main/java/inhibicion.txt");
+      this.alfaReal = leerMatriz("src/main/java/alfa.txt");
+      this.betaReal = leerMatriz("src/main/java/beta.txt");
+      this.m0Real = leerMatriz("src/main/java/inicial.txt").transpose();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       System.out.println("No se encontro el archivo para leer la matriz.");
@@ -56,17 +57,11 @@ public class RedDePetri {
 
   }
 
-  /**
-   * Lee la matriz de incidencia positiva que esta en src/main/java y que es un
-   * .txt. El archivo debe llamarse "incidenciaPositiva".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerIncidenciaPositiva() throws FileNotFoundException {
+
+  private void setDimensions(String pathMatriz) throws FileNotFoundException {
     boolean leido = false;
     Scanner input = null;
-    input = new Scanner(new File("src/main/java/incidenciaPositiva.txt"));
+    input = new Scanner(new File(pathMatriz));
     int rows = 0;
     int columns = 0;
     while (input.hasNextLine()) {
@@ -79,33 +74,15 @@ public class RedDePetri {
       leido = true;
       colReader.close();
     }
-    double[][] incidenciaPositiva = new double[rows][columns];
     input.close();
-    input = new Scanner(new File("src/main/java/incidenciaPositiva.txt"));
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < columns; ++j) {
-        if (input.hasNextInt()) {
-          incidenciaPositiva[i][j] = input.nextInt();
-        }
-      }
-    }
-    incidenciaRealPositiva = new Array2DRowRealMatrix(incidenciaPositiva);
     columnas = columns;
     filas = rows;
-    input.close();
   }
 
-  /**
-   * Lee la matriz de incidencia negativa que esta en src/main/java y que es un
-   * .txt. El archivo debe llamarse "incidenciaNegativa".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerIncidenciaNegativa() throws FileNotFoundException {
+  private Array2DRowRealMatrix leerMatriz(String path) throws FileNotFoundException {
     boolean leido = false;
     Scanner input = null;
-    input = new Scanner(new File("src/main/java/incidenciaNegativa.txt"));
+    input = new Scanner(new File(path));
     int rows = 0;
     int columns = 0;
     while (input.hasNextLine()) {
@@ -118,110 +95,19 @@ public class RedDePetri {
       leido = true;
       colReader.close();
     }
-    double[][] incidenciaNegativa = new double[rows][columns];
+    double[][] matriz = new double[rows][columns];
     input.close();
-    input = new Scanner(new File("src/main/java/incidenciaNegativa.txt"));
+    input = new Scanner(new File(path));
     for (int i = 0; i < rows; ++i) {
       for (int j = 0; j < columns; ++j) {
         if (input.hasNextInt()) {
-          incidenciaNegativa[i][j] = input.nextInt();
+          matriz[i][j] = input.nextInt();
         }
       }
     }
-    incidenciaRealNegativa = new Array2DRowRealMatrix(incidenciaNegativa);
     input.close();
-  }
-
-  /**
-   * Lee la matriz de marcado inicial que esta en src/main/java y que es un .txt.
-   * El archivo debe llamarse "inicial".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerInicial() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/inicial.txt"));
-    double[][] m0 = new double[filas][1];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[i][0] = input.nextInt();
+    return new Array2DRowRealMatrix(matriz);
     }
-    m0Real = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
-
-  /**
-   * Lee la matriz de alfa que esta en src/main/java y que es un .txt. El archivo
-   * debe llamarse "alfa".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerAlfa() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/alfa.txt"));
-    double[][] m0 = new double[1][columnas];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[0][i] = input.nextInt();
-    }
-    alfaReal = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
-
-  /**
-   * Lee la matriz beta que esta en src/main/java y que es un .txt. El archivo
-   * debe llamarse "beta".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerBeta() throws FileNotFoundException {
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/beta.txt"));
-    double[][] m0 = new double[1][columnas];
-    for (int i = 0; input.hasNextLine(); i++) {
-      m0[0][i] = input.nextInt();
-    }
-    betaReal = new Array2DRowRealMatrix(m0);
-    input.close();
-  }
-
-  /**
-   * Lee la matriz de inhibicion que esta en src/main/java y que es un .txt. El
-   * archivo debe llamarse "inhibicion".
-   * 
-   * @throws FileNotFoundException cuando no puede encontrar el archivo en el path
-   *                               especificado.
-   */
-  private void leerInhibicion() throws FileNotFoundException {
-    boolean leido = false;
-    Scanner input = null;
-    input = new Scanner(new File("src/main/java/inhibicion.txt"));
-    int rows = 0;
-    int columns = 0;
-    while (input.hasNextLine()) {
-      ++rows;
-      Scanner colReader = new Scanner(input.nextLine());
-      while (colReader.hasNextInt() && !leido) {
-        ++columns;
-        colReader.nextInt();
-      }
-      leido = true;
-      colReader.close();
-    }
-    double[][] inhibicion = new double[rows][columns];
-    input.close();
-    input = new Scanner(new File("src/main/java/inhibicion.txt"));
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < columns; ++j) {
-        if (input.hasNextInt()) {
-          inhibicion[i][j] = input.nextInt();
-        }
-      }
-    }
-    inhibicionReal = new Array2DRowRealMatrix(inhibicion);
-    input.close();
-  }
 
   /**
    * Se fija si la transicion esta dentro de la ventana de tiempo, en cuyo caso

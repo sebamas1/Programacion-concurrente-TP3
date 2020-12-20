@@ -172,7 +172,7 @@ public class Log {
    */
 
   private boolean checkInvT(String input) {
-    String resultado = histInvT;
+    String resultado = input;
     // Invariante 12-13 T5 -T7
     Pattern invT1 = Pattern.compile("\\b12\\b([\\s0-9]*?)\\b13\\b");
     Matcher regexMatcher = invT1.matcher(resultado);
