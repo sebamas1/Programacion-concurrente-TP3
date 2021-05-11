@@ -10,14 +10,11 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
+
 public class Log {
-  private String histInvT = "";
   private List<Integer> invariantesT = new ArrayList<Integer>();
   private final static Logger logger = Logger.getLogger("log.txt");
   private RealMatrix mDReal;
@@ -92,9 +89,6 @@ public class Log {
     mOReal = mAReal;
     checkPInvariants(mAReal);
     logger.info("" + indice);
-    if (this.invariantesT.contains(indice)) {
-      this.histInvT += " " + Integer.toString(indice);
-    }
   }
 
   /**
@@ -136,10 +130,11 @@ public class Log {
    * @throws FileNotFoundException si no puede escribir el log.
    */
   public void leerResultados() throws FileNotFoundException {
+    
     boolean iguales = true;
     for (int i = 0; i < mOReal.getRowDimension(); i++) {
       if (mDReal.getEntry(i, 0) != mOReal.getEntry(i, 0)) {
-        logger.warning("Matrices observada y esperada no son iguales en el elemento " + i);
+        logger.warning("\nMatrices observada y esperada no son iguales en el elemento " + i);
         logger.info(mOReal.toString());
         logger.info(mDReal.toString());
         iguales = false;
@@ -147,54 +142,13 @@ public class Log {
       }
     }
     if (iguales) {
-      logger.info("El marcado final esperado, coincide con el real.");
+      logger.info("\nEl marcado final esperado, coincide con el real.");
     }
-    histInvT += " ";
     
     if (flagPInvariants) {
-      logger.info("No se cumplen los invP.");
+      logger.info("\nNo se cumplen los invP.");
     } else {
-      logger.info("Todo en orden invP.");
+      logger.info("\nTodo en orden invP.\n");
     } 
-    
-    if (this.checkInvT(histInvT)) {
-      logger.info("Todo en orden invT.");
-    } else {
-      logger.info("No se cumplen InvT.");
-    }
-  }
-
-  /**
-   * Checkea que se cumplan los invariantes T.
-   * 
-   * @param input string sobre el que se checkean los invariantes.
-   * @return true si los invariantes se cumple, o false en caso contrario.
-   */
-
-  private boolean checkInvT(String input) {
-    String resultado = histInvT;
-    // Invariante 12-13 T5 -T7
-    Pattern invT1 = Pattern.compile("\\b12\\b([\\s0-9]*?)\\b13\\b");
-    Matcher regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1");
-
-    //T8 - Power up delay 2 - PowerDownThreashold 2
-    invT1 = Pattern.compile("\\b14\\b([\\s0-9]*?)\\b4\\b([\\s0-9]*?)\\b2\\b");
-    regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1$2");
-    
-   // T11 - T12
-    invT1 = Pattern.compile("\\b7\\b([\\s0-9]*?)\\b8\\b");
-    regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1");
-
-    //T0 - PowerUpDelay 1 - PowerDown threshold 1
-    invT1 = Pattern.compile("\\b5\\b([\\s0-9]*?)\\b3\\b([\\s0-9]*?)\\b1\\b");
-    regexMatcher = invT1.matcher(resultado);
-    resultado = regexMatcher.replaceAll("$1$2");
-
-    invT1 = Pattern.compile("[^\\s]+");
-    regexMatcher = invT1.matcher(resultado);
-    return !regexMatcher.find();
   }
 }

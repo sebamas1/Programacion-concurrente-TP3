@@ -9,7 +9,7 @@ class CustomRecordFormatter extends Formatter {
   @Override
   public String format(final LogRecord r) {
     StringBuilder sb = new StringBuilder();
-    sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
+    sb.append(formatMessage(r)).append(" ");
     if (null != r.getThrown()) {
       sb.append("Throwable occurred: "); //$NON-NLS-1$
       Throwable t = r.getThrown();
