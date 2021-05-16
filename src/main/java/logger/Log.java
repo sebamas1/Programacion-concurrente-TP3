@@ -141,14 +141,12 @@ public class Log {
         break;
       }
     }
-    if (iguales) {
-      logger.info("\nEl marcado final esperado, coincide con el real.");
+    if (!iguales) {
+      logger.info("\nEl marcado final esperado NO coincide con el real.");
     }
     
     if (flagPInvariants) {
       logger.info("\nNo se cumplen los invP.");
-    } else {
-      logger.info("\nTodo en orden invP.\n");
-    } 
+    }
   }
 }
