@@ -123,9 +123,8 @@ public class Log {
 
   /**
    * Se fija que el marcado final sea el esperado. Tanto si es correcto o no,
-   * imprime un mensaje indicandolo. Luego, lee los Tinvariants y se fija que se
-   * cumplan. Imprime un mensaje en el log informando del exito o fracaso de los
-   * invariantes P y T.
+   * imprime un mensaje indicandolo.
+   * Imprime un mensaje en el log informando del exito o fracaso de los invariantes P.
    * 
    * @throws FileNotFoundException si no puede escribir el log.
    */
